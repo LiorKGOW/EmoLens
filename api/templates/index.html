@@ -1,0 +1,14 @@
+<!doctype html>
+<title>Upload new File</title>
+<h1>Emotion Detectron</h1>
+<h3>Upload a picture of a face and get the emotion</h3>
+<form method=post enctype=multipart/form-data>
+  <input type=file name=file>
+  <input type=submit value=Upload>
+</form>
+<h1>{{analysis}}</h1>
+
+{% if filename %}
+<img src="{{ url_for('download_file', name=filename) }}">
+{% endif %}
+

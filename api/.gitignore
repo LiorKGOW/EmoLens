@@ -1,5 +1,8 @@
 uploads/*
-
+my_env
+slnx.sqlite
+VSWorkspaceState.json
+.suo
 .DS_Store
 .env
 .flaskenv

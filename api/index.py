@@ -4,7 +4,7 @@ from deepface import DeepFace
 import os
 
 # if on windows, use this
-UPLOAD_FOLDER = '.\\uploads'
+UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__)

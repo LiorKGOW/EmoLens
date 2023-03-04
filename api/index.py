@@ -3,6 +3,8 @@ from werkzeug.utils import secure_filename
 from deepface import DeepFace
 import os
 
+
+
 # if on windows, use this
 UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -54,9 +56,11 @@ def analyze():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        analysis = DeepFace.analyze(img_path = os.path.join(app.config['UPLOAD_FOLDER'], filename), actions = ['emotion'])
-        print(analysis['dominant_emotion'])
-        return jsonify(analysis['dominant_emotion'])
+        saved_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        analysis = DeepFace.analyze(img_path = saved_path)
+
+        print(analysis)
+        return jsonify(analysis)
     else:
         return 'Something went wrong'
 

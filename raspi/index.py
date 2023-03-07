@@ -1,7 +1,32 @@
 import cv2
 from datetime import datetime
 from playsound import playsound
+import requests as req
 
+
+URL = "http://localhost:5000"
+
+
+def upload_image_to_firebase(img_path):
+    # Upload the image to firebase
+    # TODO: Implement this function
+    pass
+
+def make_request_to_server(img_path):
+
+    # Send the image to the server
+    files = {'file': open(img_path, 'rb')}
+    print("sending post request to server")
+    r = req.post(f"{URL}/analyze", files=files)
+
+    # Get the response from the server
+
+    response = r.json()
+    print("got response from server")
+    print(response)
+
+    # Return the response
+    return response
 
 
 
@@ -9,21 +34,32 @@ from playsound import playsound
 def snap_and_save_image():
     # Open the webcam
     cap = cv2.VideoCapture(0)
+    print("Webcam opened")
 
     # Take a picture
     ret, image = cap.read()
+    print("snapped image")
 
     # Save the image to a file
     temp_name = "cap" + datetime.now().strftime("%Y%m%d-%H%M%S") + ".jpg"
-    cv2.imwrite("captures/" + temp_name, image)
+    cv2.imwrite(temp_name, image)
+    print(f"saved image to {temp_name}")
 
     # Close the webcam
     cap.release()
+    print("Webcam closed")
 
-    return "captures/" + temp_name
+    return temp_name
 
 
 def sound_results(img_info):
+
+    if(img_info["error"]):
+        playsound("sounds/error.mp3")
+        return
+    
+    print("playing sound for info:")
+    print(img_info)
 
     play_emotion_sound(img_info["dominant_emotion"])
     play_gender_sound(img_info["gender"])
@@ -76,9 +112,8 @@ def play_emotion_sound(emotion):
 
 
 if __name__ == "__main__":
-    # img_path = snap_and_save_image()
-    img_info = {"dominant_emotion" : "happy",
-                "gender" : "Man",
-                "age" : 18
-                }
+    img_path = snap_and_save_image()
+    img_info = make_request_to_server(img_path)
     sound_results(img_info)
+    upload_image_to_firebase(img_path)
+    

@@ -24,7 +24,6 @@ def allowed_file(filename):
 # it will show the result of the analysis in the same page
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
-    print('hi1')
 
     if request.method == 'POST':
         # check if the post request has the file part
@@ -57,8 +56,13 @@ def analyze():
         filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         saved_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        analysis = DeepFace.analyze(img_path = saved_path)
-
+        analysis = {}
+        try:
+            analysis = DeepFace.analyze(img_path = saved_path)
+        except ValueError:
+            analysis = {'error': 'could not detect face'}
+        except:
+            analysis = {'error': 'something went wrong'}
         print(analysis)
         return jsonify(analysis)
     else:
